@@ -66,9 +66,9 @@ type GoPdf struct {
 	isUseInfo bool
 	info      *PdfInfo
 
-        //outlines
-        outlines *OutlinesObj
-        indexOfOutlinesObj int
+	//outlines
+	outlines           *OutlinesObj
+	indexOfOutlinesObj int
 
 	// gofpdi free pdf document importer
 	fpdi *gofpdi.Importer
@@ -338,8 +338,15 @@ func (gp *GoPdf) AddPageWithOption(opt PageOption) {
 	gp.resetCurrXY()
 }
 
+func (gp *GoPdf) ChangePage(pageNo int) {
+	gp.curr.IndexOfPageObj = pageNo
+	//reset
+	gp.indexOfContent = -1
+	gp.resetCurrXY()
+}
+
 func (gp *GoPdf) AddOutline(title string) {
-        gp.outlines.AddOutline(gp.curr.IndexOfPageObj + 1, title)
+	gp.outlines.AddOutline(gp.curr.IndexOfPageObj+1, title)
 }
 
 //Start : init gopdf
@@ -360,8 +367,8 @@ func (gp *GoPdf) Start(config Config) {
 	gp.outlines.init(func() *GoPdf {
 		return gp
 	})
-        gp.indexOfCatalogObj = gp.addObj(catalog)
-        gp.indexOfPagesObj = gp.addObj(pages)
+	gp.indexOfCatalogObj = gp.addObj(catalog)
+	gp.indexOfPagesObj = gp.addObj(pages)
 	gp.indexOfOutlinesObj = gp.addObj(gp.outlines)
 	gp.outlines.SetIndexObjOutlines(gp.indexOfOutlinesObj)
 
@@ -1023,10 +1030,10 @@ func (gp *GoPdf) prepare() {
 		gp.addObj(encObj)
 	}
 
-        if gp.outlines.Count() > 0 {
-                catalogObj := gp.pdfObjs[gp.indexOfCatalogObj].(*CatalogObj)
-                catalogObj.SetIndexObjOutlines(gp.indexOfOutlinesObj)
-        }
+	if gp.outlines.Count() > 0 {
+		catalogObj := gp.pdfObjs[gp.indexOfCatalogObj].(*CatalogObj)
+		catalogObj.SetIndexObjOutlines(gp.indexOfOutlinesObj)
+	}
 
 	if gp.indexOfPagesObj != -1 {
 		indexCurrPage := -1
@@ -1267,7 +1274,7 @@ func (gp *GoPdf) addExtGStateObj(extGStateObj *ExtGStateObj) (index int, err err
 
 // IsCurrFontContainGlyph defines is current font contains to a glyph
 // r:           any rune
-func (gp *GoPdf) IsCurrFontContainGlyph (r rune) (bool, error) {
+func (gp *GoPdf) IsCurrFontContainGlyph(r rune) (bool, error) {
 	fontISubset := gp.curr.FontISubset
 	if fontISubset == nil {
 		return false, nil
