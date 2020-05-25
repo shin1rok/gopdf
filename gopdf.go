@@ -339,11 +339,11 @@ func (gp *GoPdf) AddPageWithOption(opt PageOption) {
 }
 
 func (gp *GoPdf) ChangePage(pageNo int) {
-	gp.curr.IndexOfPageObj = pageNo
+	//gp.curr.IndexOfPageObj = pageNo
 	gp.indexOfContent = pageNo
 	//reset
 	//gp.indexOfContent = -1
-	gp.resetCurrXY()
+	//gp.resetCurrXY()
 }
 
 func (gp *GoPdf) AddOutline(title string) {
